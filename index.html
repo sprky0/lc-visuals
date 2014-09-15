@@ -1,135 +1,183 @@
 <!DOCTYPE html>
 <html>
+<head>
+	<link rel="stylesheet" href="css/screen.css" />
+</head>
 <body>
-
-<style>
-	html, body {
-		width: 100%;
-		height: 100%;
-		margin: 0;
-		padding: 0;
-		background-color: black;
-	}
-	div {
-		display: block;
-		border: 0;
-		margin: 0;
-		padding: 0;
-		position: absolute;
-	}
-</style>
 <script>
 
-(function(){
+(function(container){
 
-	var resolution_x = Math.floor( Math.random() * 10 + 1 );
-	var resolution_y = Math.floor( Math.random() * 10 + 1 );
+	var rate = 1000 / 30;
+	var winterval = false;
+	var keys = {
 
-	var life = Math.floor( Math.random() * 5000 );
+		// ROMAN ALPHA
+		A : 65, B : 66, C : 67, D : 68,
+		E : 69, F : 70, G : 71, H : 72,
+		I : 73, J : 74, K : 75, L : 76,
+		M : 77, N : 78, O : 79, P : 80,
+		Q : 81, R : 82, S : 83, T : 84,
+		U : 85, V : 86, W : 87, X : 88,
+		Y : 89, Z : 90,
 
-	var container = document.getElementsByTagName("body")[0];
-	var width = window.innerWidth;
-	var height = window.innerHeight;
-	var pixels = {};
+		// ARROW KEYS
+		LEFT : 37, UP : 38,
+		RIGHT : 39, DOWN : 40,
 
-	function Item(element, x, y) {
+		//  NUMERALS
+		ZERO : 48, ONE : 49, TWO : 50,
+		THREE : 51, FOUR : 52, FIVE : 53,
+		SIX : 54, SEVEN : 55, EIGHT : 56,
+		NINE : 57,
 
-		var _element = element;
+		// OTHER
+		TAB : 9, SHIFT : 16, ESCAPE : 27,
+		RETURN : 13, ENTER : 13,
+		ALT : 18, OPTION : 18,
+		COMMAND : 224, CONTROL : 17, CTRL : 17,
+		DELETE : 8, SPACE : 32
 
-		scaleTo(width / resolution_x, height / resolution_y);
-		moveTo(x,y);
+	};
 
-		function setColor(s) {
-			_element.style.backgroundColor = s;
+	function clear() {
+		try {
+			clearInterval(winterval);
+		} catch(e) {
+			// did errored
 		}
-
-		function randomColor(colors) {
-			setColor( colors[Math.floor(Math.random() * colors.length) ] );
-		}
-
-		function scaleTo(w,h) {
-			_element.style.width = w + "px";
-			_element.style.height = h + "px";
-		}
-
-		function moveTo(x,y) {
-			_element.style.left = (width / resolution_x * x) + "px";
-			_element.style.top = (height / resolution_y * y) + "px";
-		}
-
-		return {
-			dom : _element,
-			moveTo : moveTo,
-			setColor : setColor,
-			randomColor : randomColor
-		};
-
+		container.innerHTML = "";
 	}
 
-	function init() {
+	function world(res_x, res_y, moder) {
 
-		for (var x = 0; x < resolution_x; x++) {
-			for (var y = 0; y < resolution_y; y++) {
-				var zitem = new Item( document.createElement("div"), x, y );
-				container.appendChild( zitem.dom );
-				pixels[x+"_"+y] = zitem;
-				zitem.randomColor(pixels[x+"_"+y]);
+		clear();
+
+		var resolution_x = res_x || 20;
+		var resolution_y = res_y || 10;
+		var mode = moder || "reddy";
+
+		var life = Math.floor( Math.random() * 5000 );
+
+		var width = window.innerWidth;
+		var height = window.innerHeight;
+		var pixels = {};
+
+		function Item(element, x, y) {
+
+			var _element = element;
+
+			scaleTo(width / resolution_x, height / resolution_y);
+			moveTo(x,y);
+
+			function setColor(s) {
+				_element.style.backgroundColor = s;
+			}
+
+			function randomColor(colors) {
+				setColor( colors[Math.floor(Math.random() * colors.length) ] );
+			}
+
+			function scaleTo(w,h) {
+				_element.style.width = w + "px";
+				_element.style.height = h + "px";
+			}
+
+			function moveTo(x,y) {
+				_element.style.left = (width / resolution_x * x) + "px";
+				_element.style.top = (height / resolution_y * y) + "px";
+			}
+
+			return {
+				dom : _element,
+				moveTo : moveTo,
+				setColor : setColor,
+				randomColor : randomColor
+			};
+
+		}
+
+		function init(callback) {
+
+			for (var x = 0; x < resolution_x; x++) {
+				for (var y = 0; y < resolution_y; y++) {
+					var zitem = new Item( document.createElement("div"), x, y );
+					container.appendChild( zitem.dom );
+					pixels[x+"_"+y] = zitem;
+					zitem.randomColor(pixels[x+"_"+y]);
+				}
+			}
+
+			callback();
+		}
+
+		function randomPixel() {
+			return pixels[Math.floor( Math.random() * resolution_x) + "_" + Math.floor( Math.random() * resolution_y)];
+		}
+
+		function clearPixels() {
+			for (var x = 0; x < resolution_x; x++) {
+				for (var y = 0; y < resolution_y; y++) {
+					pixels[x+"_"+y].setColor("#000000");
+				}
 			}
 		}
 
-	}
+		function interval() {
 
-	function randomPixel() {
-		return pixels[Math.floor( Math.random() * resolution_x) + "_" + Math.floor( Math.random() * resolution_y)];
-	}
+			switch (mode) {
 
-	function black() {
-		for (var x = 0; x < resolution_x; x++) {
-			for (var y = 0; y < resolution_y; y++) {
-				pixels[x+"_"+y].setColor("#000000");
+				default:
+					for(var i = 0; i < 50; i++) {
+						randomPixel().randomColor(["#ff0000","#aa0000","#cc0000","#000000","#0000aa"]);
+					}
+				break;
+
+				case "reddy":
+					clearPixels();
+					for(var i = 0; i < 100; i++) {
+						randomPixel().randomColor(["#ff0000","#aa0000","#cc0000","#110000","#000000"]);
+					}
+				break;
+
 			}
-		}
-	}
 
-	function interval() {
-
-		var mode = "mode";
-
-		switch (mode) {
-
-			default:
-
-				//black();
-				for(var i = 0; i < 50; i++) {
-					randomPixel().randomColor(["#ff0000","#aa0000","#cc0000","#000000","#0000aa"]);
-				}
-
-			break;
-
-			case "reddy":
-				// crazy red cycle
-				black();
-				for(var i = 0; i < 100; i++) {
-					randomPixel().randomColor(["#ff0000","#aa0000","#cc0000"]);
-				}
-
-			break;
+			winterval = setTimeout(interval, rate);
 
 		}
 
+		init(interval);
+
 	}
 
+	function rand(high,low) {
+		return Math.floor(Math.random() * Math.max(high,low) + Math.min(high,low));
+	}
 
+	document.addEventListener("keyup", function(e) {
+		switch(e.keyCode) {
+			case keys.R:
+				world(rand(20,1), rand(20,1));
+				break;
 
+			case keys.ONE:
+				rate = 1000 / 60;
+				break;
 
-	init();
-	setInterval(interval, 1000 / 30);
+			case keys.TWO:
+				rate = 1000 / 30;
+				break;
 
-	setTimeout(function(){
-		window.locaton = window.location + "?#?#?";
-	}, life);
+			case keys.THREE:
+				rate = 1000 / 15;
+				break;
 
-})();
+		}
+	});
+
+	world(1,1,"reddy");
+
+})(document.getElementsByTagName("body")[0]);
 
 </script>
 
