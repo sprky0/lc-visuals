@@ -8,6 +8,7 @@
 		height: 100%;
 		margin: 0;
 		padding: 0;
+		background-color: black;
 	}
 	div {
 		display: block;
@@ -21,8 +22,10 @@
 
 (function(){
 
-	var resolution_x = 10;
-	var resolution_y = 5;
+	var resolution_x = Math.floor( Math.random() * 10 + 1 );
+	var resolution_y = Math.floor( Math.random() * 10 + 1 );
+
+	var life = Math.floor( Math.random() * 5000 );
 
 	var container = document.getElementsByTagName("body")[0];
 	var width = window.innerWidth;
@@ -90,9 +93,28 @@
 
 	function interval() {
 
-		black();
-		for(var i = 0; i < 100; i++) {
-			randomPixel().randomColor(["#ff0000","#aa0000","#cc0000"]);
+		var mode = "mode";
+
+		switch (mode) {
+
+			default:
+
+				//black();
+				for(var i = 0; i < 50; i++) {
+					randomPixel().randomColor(["#ff0000","#aa0000","#cc0000","#000000","#0000aa"]);
+				}
+
+			break;
+
+			case "reddy":
+				// crazy red cycle
+				black();
+				for(var i = 0; i < 100; i++) {
+					randomPixel().randomColor(["#ff0000","#aa0000","#cc0000"]);
+				}
+
+			break;
+
 		}
 
 	}
@@ -102,6 +124,10 @@
 
 	init();
 	setInterval(interval, 1000 / 30);
+
+	setTimeout(function(){
+		window.locaton = window.location + "?#?#?";
+	}, life);
 
 })();
 
