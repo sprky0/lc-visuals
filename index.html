@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<style>
+	html, body {
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+	}
+	div {
+		display: block;
+		border: 0;
+		margin: 0;
+		padding: 0;
+		position: absolute;
+	}
+</style>
+<script>
+
+(function(){
+
+	var resolution_x = 10;
+	var resolution_y = 5;
+
+	var container = document.getElementsByTagName("body")[0];
+	var width = window.innerWidth;
+	var height = window.innerHeight;
+	var pixels = {};
+
+	function Item(element, x, y) {
+
+		var _element = element;
+
+		scaleTo(width / resolution_x, height / resolution_y);
+		moveTo(x,y);
+
+		function setColor(s) {
+			_element.style.backgroundColor = s;
+		}
+
+		function randomColor(colors) {
+			setColor( colors[Math.floor(Math.random() * colors.length) ] );
+		}
+
+		function scaleTo(w,h) {
+			_element.style.width = w + "px";
+			_element.style.height = h + "px";
+		}
+
+		function moveTo(x,y) {
+			_element.style.left = (width / resolution_x * x) + "px";
+			_element.style.top = (height / resolution_y * y) + "px";
+		}
+
+		return {
+			dom : _element,
+			moveTo : moveTo,
+			setColor : setColor,
+			randomColor : randomColor
+		};
+
+	}
+
+	function init() {
+
+		for (var x = 0; x < resolution_x; x++) {
+			for (var y = 0; y < resolution_y; y++) {
+				var zitem = new Item( document.createElement("div"), x, y );
+				container.appendChild( zitem.dom );
+				pixels[x+"_"+y] = zitem;
+				zitem.randomColor(pixels[x+"_"+y]);
+			}
+		}
+
+	}
+
+	function randomPixel() {
+		return pixels[Math.floor( Math.random() * resolution_x) + "_" + Math.floor( Math.random() * resolution_y)];
+	}
+
+	function black() {
+		for (var x = 0; x < resolution_x; x++) {
+			for (var y = 0; y < resolution_y; y++) {
+				pixels[x+"_"+y].setColor("#000000");
+			}
+		}
+	}
+
+	function interval() {
+
+		black();
+		for(var i = 0; i < 100; i++) {
+			randomPixel().randomColor(["#ff0000","#aa0000","#cc0000"]);
+		}
+
+	}
+
+
+
+
+	init();
+	setInterval(interval, 1000 / 30);
+
+})();
+
+</script>
+
+</body>
+</html>
