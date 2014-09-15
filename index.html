@@ -53,9 +53,12 @@
 
 		clear();
 
+		var pointer_x = 0;
+		var pointer_y = 0;
+
 		var resolution_x = res_x || 20;
 		var resolution_y = res_y || 10;
-		var mode = moder || "reddy";
+		var mode = moder || "singler";
 
 		var life = Math.floor( Math.random() * 5000 );
 
@@ -112,7 +115,7 @@
 		}
 
 		function randomPixel() {
-			return pixels[Math.floor( Math.random() * resolution_x) + "_" + Math.floor( Math.random() * resolution_y)];
+			return pixels[rand(resolution_x) + "_" + rand(resolution_y)];
 		}
 
 		function clearPixels() {
@@ -133,7 +136,35 @@
 					}
 				break;
 
-				case "reddy":
+			case "vcycler":
+
+					clearPixels();
+
+					for (pointer_y = 0; pointer_y < resolution_y; pointer_y++) {
+						pixels[pointer_x+"_"+pointer_y].setColor("#FF0000");
+					}
+					pointer_x ++;
+
+					if (pointer_x >= resolution_x)
+						pointer_x = 0;
+
+					break;
+
+				case "hcycler":
+
+						clearPixels();
+
+						for (pointer_x = 0; pointer_x < resolution_x; pointer_x++) {
+							pixels[pointer_x+"_"+pointer_y].setColor("#FF0000");
+						}
+						pointer_y ++;
+
+						if (pointer_y >= resolution_y)
+							pointer_yrxlbvlvlr = 0;
+
+						break;
+
+				case "singler":
 					clearPixels();
 					for(var i = 0; i < 100; i++) {
 						randomPixel().randomColor(["#ff0000","#aa0000","#cc0000","#110000","#000000"]);
@@ -151,31 +182,92 @@
 	}
 
 	function rand(high,low) {
-		return Math.floor(Math.random() * Math.max(high,low) + Math.min(high,low));
+		return Math.floor(Math.random() * Math.max(high,low||0) + Math.min(high,low||0));
 	}
 
 	document.addEventListener("keyup", function(e) {
 		switch(e.keyCode) {
+
+			case keys.Z:
+				clear();
+				break;
+
+			case keys.X:
+				world(1, 1);
+				break;
+
+			case keys.L:
+				world(1, rand(200,10));
+				break;
+
+			case keys.V:
+				world(rand(200,10), 1);
+				break;
+
 			case keys.R:
-				world(rand(20,1), rand(20,1));
+				// world(rand(20,1), rand(20,1), "hcycler");
+				world(1, rand(20,16), "hcycler");
 				break;
 
 			case keys.ONE:
-				rate = 1000 / 60;
+				rate = 1000 / 200;
 				break;
 
 			case keys.TWO:
-				rate = 1000 / 30;
+				rate = 1000 / 100;
 				break;
 
 			case keys.THREE:
+				rate = 1000 / 50;
+				break;
+
+			case keys.FOUR:
+				rate = 1000 / 30;
+				break;
+
+			case keys.FIVE:
 				rate = 1000 / 15;
+				break;
+
+			case keys.SIX:
+				rate = 1000 / 8;
+				break;
+
+			case keys.SEVEN:
+				rate = 1000 / 4;
+				break;
+
+			case keys.EIGHT:
+				rate = 1000 / 2;
+				break;
+
+			case keys.NINE:
+				rate = 1000;
+				break;
+
+			case keys.ENTER:
+				fullscreen(container);
 				break;
 
 		}
 	});
 
-	world(1,1,"reddy");
+	function fullscreen(elem) {
+
+		if (elem.requestFullscreen) {
+			elem.requestFullscreen();
+		} else if (elem.msRequestFullscreen) {
+			elem.msRequestFullscreen();
+		} else if (elem.mozRequestFullScreen) {
+			elem.mozRequestFullScreen();
+		} else if (elem.webkitRequestFullscreen) {
+			elem.webkitRequestFullscreen();
+		}
+
+	}
+
+
+	world(1,1,"singler");
 
 })(document.getElementsByTagName("body")[0]);
 
