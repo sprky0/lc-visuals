@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<body>
+<head>
 <style>
 	html, body {
 		width: 100%;
@@ -17,12 +17,23 @@
 		padding: 0;
 		position: absolute;
 		cursor: none;
+		background-color: black;
 	}
+
 </style>
+</head>
+<body>
 <script>
 
 (function(container){
 
+	var mode = "default";
+	var color_sets = {
+		red : ["#ff0000","#aa0000","#cc0000","#110000"],
+		rainbow : ["#ff0000","#ffaa00","#ffff00","#00cc00","#0000cc","#ff0000ff","#00ffff"],
+		blue : ["#0000ff","#0000aa","#0000cc","#000011"]
+	};
+	var current_color_set = color_sets.red;
 	var rate = 1000 / 30;
 	var winterval = false;
 	var keys = {
@@ -57,7 +68,7 @@
 
 	function clear() {
 		try {
-			clearInterval(winterval);
+			clearTimeout(winterval);
 		} catch(e) {
 			// did errored
 		}
@@ -73,7 +84,7 @@
 
 		var resolution_x = res_x || 20;
 		var resolution_y = res_y || 10;
-		var mode = moder || "singler";
+		mode = moder || "singler";
 
 		var life = Math.floor( Math.random() * 5000 );
 
@@ -81,25 +92,27 @@
 		var height = window.innerHeight;
 		var pixels = {};
 		var on_pixels = [];
+		var off_color = "#000000";
 
 		function Item(element, x, y) {
 
 			var _element = element;
-			var id = x + "_" + y;
+			var _id = x + "_" + y;
 
 			scaleTo(width / resolution_x, height / resolution_y);
 			moveTo(x,y);
 
 			function setColor(s) {
 				_element.style.backgroundColor = s;
+				on_pixels.push( _instance );
 			}
 
 			function off() {
-				setColor("#000000");
+				_element.style.backgroundColor = off_color;
 			}
 
-			function randomColor(colors) {
-				setColor( colors[Math.floor(Math.random() * colors.length) ] );
+			function randomColorFrom(set) {
+				setColor( set[Math.floor(Math.random() * set.length) ] );
 			}
 
 			function scaleTo(w,h) {
@@ -112,12 +125,15 @@
 				_element.style.top = (height / resolution_y * y) + "px";
 			}
 
-			return {
+			var _instance = {
+				pid : _id,
 				dom : _element,
 				setColor : setColor,
 				off : off,
-				randomColor : randomColor
+				randomColorFrom : randomColorFrom
 			};
+
+			return _instance;
 
 		}
 
@@ -127,12 +143,19 @@
 				for (var y = 0; y < resolution_y; y++) {
 					var zitem = new Item( document.createElement("div"), x, y );
 					container.appendChild( zitem.dom );
-					pixels[x+"_"+y] = zitem;
-					zitem.randomColor(pixels[x+"_"+y]);
+					pixels[zitem.pid] = zitem;
 				}
 			}
 
 			callback();
+		}
+
+		function randomColorSet() {
+			var keys = [];
+			for(var i in color_sets) {
+				keys.push(i);
+			}
+			return color_sets[keys[rand(keys.length)]];
 		}
 
 		function randomPixel() {
@@ -152,7 +175,7 @@
 
 				default:
 					for(var i = 0; i < 50; i++) {
-						randomPixel().randomColor(["#ff0000","#aa0000","#cc0000","#000000","#0000aa"]);
+						randomPixel().randomColorFrom(current_color_set);
 					}
 				break;
 
@@ -161,7 +184,7 @@
 					clearPixels();
 
 					for (pointer_y = 0; pointer_y < resolution_y; pointer_y++) {
-						pixels[pointer_x+"_"+pointer_y].setColor("#FF0000");
+						pixels[pointer_x+"_"+pointer_y].setColor(current_color_set[0]);
 					}
 					pointer_x ++;
 
@@ -175,19 +198,19 @@
 						clearPixels();
 
 						for (pointer_x = 0; pointer_x < resolution_x; pointer_x++) {
-							pixels[pointer_x+"_"+pointer_y].setColor("#FF0000");
+							pixels[pointer_x+"_"+pointer_y].setColor(current_color_set[0]);
 						}
 						pointer_y ++;
 
 						if (pointer_y >= resolution_y)
-							pointer_yrxlbvlvlr = 0;
+							pointer_y = 0;
 
 						break;
 
 				case "singler":
 					clearPixels();
 					for(var i = 0; i < 100; i++) {
-						randomPixel().randomColor(["#ff0000","#aa0000","#cc0000","#110000","#000000"]);
+						randomPixel().randomColorFrom(current_color_set);
 					}
 				break;
 
@@ -197,6 +220,7 @@
 
 		}
 
+		current_color_set = randomColorSet();
 		init(interval);
 
 	}
@@ -214,6 +238,14 @@
 
 			case keys.X:
 				world(1, 1);
+				break;
+
+			case keys.C:
+				world(2, 1);
+				break;
+
+			case keys.S:
+				world(2, 2);
 				break;
 
 			case keys.L:
@@ -286,8 +318,7 @@
 
 	}
 
-
-	world(1,1,"singler");
+	world(1,1,"vcycler");
 
 })(document.getElementsByTagName("body")[0]);
 
