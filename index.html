@@ -29,9 +29,13 @@
 
 	var mode = "default";
 	var color_sets = {
-		red : ["#ff0000","#aa0000","#cc0000","#110000"],
-		rainbow : ["#ff0000","#ffaa00","#ffff00","#00cc00","#0000cc","#ff0000ff","#00ffff"],
-		blue : ["#0000ff","#0000aa","#0000cc","#000011"]
+		red : ["#ff0000","#aa0000","#cc0000","#110000","#000000"],
+		rainbow : ["#ff0000","#ffaa00","#ffff00","#00cc00","#0000cc","#ff0000ff","#00ffff","#000000"],
+		blue : ["#0000ff","#0000aa","#0000cc","#000011","#000000"],
+		green : ["#00ff00","#00aa00","#00cc00","#001100","#000000"],
+		solid_red : ["#ff0000","#000000"],
+		solid_blue : ["#0000ff","#000000"],
+		solid_green : ["#00ff00","#000000"]
 	};
 	var current_color_set = color_sets.red;
 	var rate = 1000 / 30;
@@ -150,14 +154,6 @@
 			callback();
 		}
 
-		function randomColorSet() {
-			var keys = [];
-			for(var i in color_sets) {
-				keys.push(i);
-			}
-			return color_sets[keys[rand(keys.length)]];
-		}
-
 		function randomPixel() {
 			return pixels[rand(resolution_x) + "_" + rand(resolution_y)];
 		}
@@ -184,7 +180,7 @@
 					clearPixels();
 
 					for (pointer_y = 0; pointer_y < resolution_y; pointer_y++) {
-						pixels[pointer_x+"_"+pointer_y].setColor(current_color_set[0]);
+						pixels[pointer_x+"_"+pointer_y].setColor(randomFrom(current_color_set));
 					}
 					pointer_x ++;
 
@@ -198,7 +194,7 @@
 						clearPixels();
 
 						for (pointer_x = 0; pointer_x < resolution_x; pointer_x++) {
-							pixels[pointer_x+"_"+pointer_y].setColor(current_color_set[0]);
+							pixels[pointer_x+"_"+pointer_y].setColor(randomFrom(current_color_set));
 						}
 						pointer_y ++;
 
@@ -220,9 +216,12 @@
 
 		}
 
-		current_color_set = randomColorSet();
 		init(interval);
 
+	}
+
+	function randomFrom(s) {
+		return s[rand(s.length)];
 	}
 
 	function rand(high,low) {
@@ -234,6 +233,18 @@
 
 			case keys.Z:
 				clear();
+				break;
+
+			case keys.Q:
+				setRandomColorSetFrom(["red","blue","green"]);
+				break;
+
+			case keys.W:
+				setColorSet(randomFrom(["solid_red","solid_blue","solid_green"]));
+				break;
+
+			case keys.E:
+				setColorSet("rainbow");
 				break;
 
 			case keys.X:
@@ -248,7 +259,7 @@
 				world(2, 2);
 				break;
 
-			case keys.L:
+			case keys.B:
 				world(1, rand(200,10));
 				break;
 
@@ -258,7 +269,12 @@
 
 			case keys.R:
 				// world(rand(20,1), rand(20,1), "hcycler");
-				world(1, rand(20,16), "hcycler");
+				world(1, rand(20,4), "hcycler");
+				break;
+
+			case keys.T:
+				// world(rand(20,1), rand(20,1), "hcycler");
+				world(rand(20,4,1), "vcycler");
 				break;
 
 			case keys.ONE:
@@ -316,6 +332,27 @@
 			elem.webkitRequestFullscreen();
 		}
 
+	}
+
+	function randomColorSet() {
+		var keys = [];
+		for(var i in color_sets) {
+			keys.push(i);
+		}
+		return color_sets[keys[rand(keys.length)]];
+	}
+
+	function setRandomColorSetFrom(s) {
+		setColorSet( randomFrom(s) );
+	}
+
+	function setRandomColorset() {
+		current_color_set = randomColorSet();
+	}
+
+	function setColorSet(k) {
+		current_color_set = color_sets[k];
+		console.log(k);
 	}
 
 	world(1,1,"vcycler");
