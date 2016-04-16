@@ -1,4 +1,5 @@
-LC-Visuals
-==========
+# LC-Visuals
 
-Possible realtime generated JS visuals for the Lost Children live show.  Low tech!
+Realtime generated JS visuals for the Lost Children live show.  Low tech!
+
+## Controls

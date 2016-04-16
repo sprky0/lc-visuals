@@ -28,16 +28,16 @@
 (function(container){
 
 	var mode = "default";
-	var color_sets = {
+	var colorSets = {
 		red : ["#ff0000","#aa0000","#cc0000","#110000","#000000"],
 		rainbow : ["#ff0000","#ffaa00","#ffff00","#00cc00","#0000cc","#ff0000ff","#00ffff","#000000"],
 		blue : ["#0000ff","#0000aa","#0000cc","#000011","#000000"],
 		green : ["#00ff00","#00aa00","#00cc00","#001100","#000000"],
-		solid_red : ["#ff0000","#000000"],
-		solid_blue : ["#0000ff","#000000"],
-		solid_green : ["#00ff00","#000000"]
+		solidRed : ["#ff0000","#000000"],
+		solidBlue : ["#0000ff","#000000"],
+		solidGreen : ["#00ff00","#000000"]
 	};
-	var current_color_set = color_sets.red;
+	var currentColorSet = colorSets.red;
 	var rate = 1000 / 30;
 	var winterval = false;
 	var keys = {
@@ -79,15 +79,15 @@
 		container.innerHTML = "";
 	}
 
-	function world(res_x, res_y, moder) {
+	function world(resX, resY, moder) {
 
 		clear();
 
-		var pointer_x = 0;
-		var pointer_y = 0;
+		var pointerX = 0;
+		var pointerY = 0;
 
-		var resolution_x = res_x || 20;
-		var resolution_y = res_y || 10;
+		var resolutionX = resX || 20;
+		var resolutionY = resY || 10;
 		mode = moder || "singler";
 
 		var life = Math.floor( Math.random() * 5000 );
@@ -95,24 +95,24 @@
 		var width = window.innerWidth;
 		var height = window.innerHeight;
 		var pixels = {};
-		var on_pixels = [];
-		var off_color = "#000000";
+		var onPixels = [];
+		var offColor = "#000000";
 
 		function Item(element, x, y) {
 
 			var _element = element;
 			var _id = x + "_" + y;
 
-			scaleTo(width / resolution_x, height / resolution_y);
+			scaleTo(width / resolutionX, height / resolutionY);
 			moveTo(x,y);
 
 			function setColor(s) {
 				_element.style.backgroundColor = s;
-				on_pixels.push( _instance );
+				onPixels.push( _instance );
 			}
 
 			function off() {
-				_element.style.backgroundColor = off_color;
+				_element.style.backgroundColor = offColor;
 			}
 
 			function randomColorFrom(set) {
@@ -125,8 +125,8 @@
 			}
 
 			function moveTo(x,y) {
-				_element.style.left = (width / resolution_x * x) + "px";
-				_element.style.top = (height / resolution_y * y) + "px";
+				_element.style.left = (width / resolutionX * x) + "px";
+				_element.style.top = (height / resolutionY * y) + "px";
 			}
 
 			var _instance = {
@@ -143,8 +143,8 @@
 
 		function init(callback) {
 
-			for (var x = 0; x < resolution_x; x++) {
-				for (var y = 0; y < resolution_y; y++) {
+			for (var x = 0; x < resolutionX; x++) {
+				for (var y = 0; y < resolutionY; y++) {
 					var zitem = new Item( document.createElement("div"), x, y );
 					container.appendChild( zitem.dom );
 					pixels[zitem.pid] = zitem;
@@ -155,14 +155,14 @@
 		}
 
 		function randomPixel() {
-			return pixels[rand(resolution_x) + "_" + rand(resolution_y)];
+			return pixels[rand(resolutionX) + "_" + rand(resolutionY)];
 		}
 
 		function clearPixels() {
-			for (var i = 0; i < on_pixels.length; i++) {
-				on_pixels[i].off();
+			for (var i = 0; i < onPixels.length; i++) {
+				onPixels[i].off();
 			}
-			on_pixels = [];
+			onPixels = [];
 		}
 
 		function interval() {
@@ -171,7 +171,7 @@
 
 				default:
 					for(var i = 0; i < 50; i++) {
-						randomPixel().randomColorFrom(current_color_set);
+						randomPixel().randomColorFrom(currentColorSet);
 					}
 				break;
 
@@ -179,13 +179,13 @@
 
 					clearPixels();
 
-					for (pointer_y = 0; pointer_y < resolution_y; pointer_y++) {
-						pixels[pointer_x+"_"+pointer_y].setColor(randomFrom(current_color_set));
+					for (pointerY = 0; pointerY < resolutionY; pointerY++) {
+						pixels[pointerX+"_"+pointerY].setColor(randomFrom(currentColorSet));
 					}
-					pointer_x ++;
+					pointerX ++;
 
-					if (pointer_x >= resolution_x)
-						pointer_x = 0;
+					if (pointerX >= resolutionX)
+						pointerX = 0;
 
 					break;
 
@@ -193,20 +193,20 @@
 
 						clearPixels();
 
-						for (pointer_x = 0; pointer_x < resolution_x; pointer_x++) {
-							pixels[pointer_x+"_"+pointer_y].setColor(randomFrom(current_color_set));
+						for (pointerX = 0; pointerX < resolutionX; pointerX++) {
+							pixels[pointerX+"_"+pointerY].setColor(randomFrom(currentColorSet));
 						}
-						pointer_y ++;
+						pointerY ++;
 
-						if (pointer_y >= resolution_y)
-							pointer_y = 0;
+						if (pointerY >= resolutionY)
+							pointerY = 0;
 
 						break;
 
 				case "singler":
 					clearPixels();
 					for(var i = 0; i < 100; i++) {
-						randomPixel().randomColorFrom(current_color_set);
+						randomPixel().randomColorFrom(currentColorSet);
 					}
 				break;
 
@@ -240,7 +240,7 @@
 				break;
 
 			case keys.W:
-				setColorSet(randomFrom(["solid_red","solid_blue","solid_green"]));
+				setColorSet(randomFrom(["solidRed","solidBlue","solidGreen"]));
 				break;
 
 			case keys.E:
@@ -334,10 +334,10 @@
 
 	function randomColorSet() {
 		var keys = [];
-		for(var i in color_sets) {
+		for(var i in colorSets) {
 			keys.push(i);
 		}
-		return color_sets[keys[rand(keys.length)]];
+		return colorSets[keys[rand(keys.length)]];
 	}
 
 	function setRandomColorSetFrom(s) {
@@ -345,11 +345,11 @@
 	}
 
 	function setRandomColorset() {
-		current_color_set = randomColorSet();
+		currentColorSet = randomColorSet();
 	}
 
 	function setColorSet(k) {
-		current_color_set = color_sets[k];
+		currentColorSet = colorSets[k];
 		console.log(k);
 	}
 
