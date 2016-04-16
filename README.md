@@ -11,6 +11,7 @@ Version 1.1.0 - This library provides realtime generated blinky JS visuals origi
 
 ### Screen Behaviors
 
+* `ENTER` - go to fullscreen
 * `Z` clear - clears the screen
 * `X` - 1x1
 * `C` - 2x1
@@ -22,16 +23,15 @@ Version 1.1.0 - This library provides realtime generated blinky JS visuals origi
 
 ### Framerates
 
- * `ONE` - 1000 / 200 ms
- * `TWO` 1000 / 100 ms
- * `THREE` - 1000 / 50 ms
- * `FOUR` - 1000 / 30 ms
- * `FIVE` - 1000 / 15 ms
- * `SIX` - 125ms
- * `SEVEN` - 250ms
- * `EIGHT` - 500ms
- * `NINE` - 1000ms
-* `ENTER` - toggle fullscreen
+* `ONE` - 1000 / 200 ms
+* `TWO` 1000 / 100 ms
+* `THREE` - 1000 / 50 ms
+* `FOUR` - 1000 / 30 ms
+* `FIVE` - 1000 / 15 ms
+* `SIX` - 125ms
+* `SEVEN` - 250ms
+* `EIGHT` - 500ms
+* `NINE` - 1000ms
 
 ## Questions
 
