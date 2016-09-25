@@ -1,5 +1,5 @@
-int rows = 40;
-int cols = 40;
+int rows = 1;
+int cols = 1;
 int maxRows = 500;
 int maxCols = 500;
 int rowHeight = 0;
@@ -8,7 +8,6 @@ int rowDrawHeight = 0;
 int colDrawWidth = 0;
 int totalHeight = 0;
 int totalWidth = 0;
-int lastMillis = 0;
 int lowRangeR = 100;
 int lowRangeG = 100;
 int lowRangeB = 100;
@@ -16,10 +15,15 @@ int highRangeR = 120;
 int highRangeG = 120;
 int highRangeB = 120;
 
+int lastMillis = 0;
+int lastChangeMillis = 0;
+int changeRateMS = 100;
+
 void setup() {
   frameRate(120);
   fullScreen();
   updateDimensions();
+  lastChangeMillis = millis();
 }
 
 void draw() {
@@ -30,11 +34,12 @@ void draw() {
   for(int cell = 0; cell < rows * cols; cell++) {
     x = cell % rows;
     y = cell / cols;
-    // currentColor = getRandomColor();
+    currentColor = getRandomColor();
     fill(currentColor);
     rect(x * colWidth, y * rowHeight, (x + 1) * colWidth, (y + 1) * rowHeight);
   }
   // printFPS(); // wtf processing!
+  introduceFuzz();
 }
 
 void updateDimensions() {
@@ -64,6 +69,24 @@ void removeRow() {
 void removeColumn() {
   if (cols > 1)
     cols--;
+}
+
+void introduceFuzz() {
+  if (millis() - lastChangeMillis > changeRateMS) {
+    lastChangeMillis = millis();
+    int randTest = (int) random(0,4);
+    // println("fuzzing - " + randTest);
+    switch(randTest) {
+      default:
+      // do nothing
+      break;
+      case 0: addColumn(); break;
+      case 1: addRow(); break;
+      case 2: removeColumn(); break;
+      case 3: removeRow(); break;
+    }
+    updateDimensions();
+  }
 }
 
 color getRandomColor() {
