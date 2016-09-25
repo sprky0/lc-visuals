@@ -11,9 +11,10 @@ int totalWidth = 0;
 int lowRangeR = 100;
 int lowRangeG = 100;
 int lowRangeB = 100;
-int highRangeR = 120;
-int highRangeG = 120;
-int highRangeB = 120;
+int highRangeR = 220;
+int highRangeG = 220;
+int highRangeB = 220;
+int alphaLevel = 125;
 
 int lastMillis = 0;
 int lastChangeMillis = 0;
@@ -36,7 +37,7 @@ void draw() {
     y = cell / cols;
     currentColor = getRandomColor();
     fill(currentColor);
-    rect(x * colWidth, y * rowHeight, (x + 1) * colWidth, (y + 1) * rowHeight);
+    rect(x * colWidth, y * rowHeight, (x + 1) * colDrawWidth, (y + 1) * rowDrawHeight);
   }
   // printFPS(); // wtf processing!
   introduceFuzz();
@@ -90,7 +91,7 @@ void introduceFuzz() {
 }
 
 color getRandomColor() {
-  return color(random(lowRangeR,highRangeR),random(lowRangeG,highRangeG),random(lowRangeB,highRangeB));
+  return color(random(lowRangeR,highRangeR),random(lowRangeG,highRangeG),random(lowRangeB,highRangeB), alphaLevel);
 }
 
 int getFPS() {
